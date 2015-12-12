@@ -21,6 +21,39 @@
 #include "core_argv.h"
 #include "core_console.h"
 
+void core_glfw_resize_callback(GLFWwindow *window, int width, int height)
+{
+	float ax = width;
+	float ay = height;
+	float ratio = core_global->view_height / core_global->view_width;
+
+	float max_width = height / ratio;
+
+	if (width < max_width)
+	{
+		ax = width;
+		ay = ax*ratio;
+	}
+	else
+	{
+		ax = ay/ratio;
+		ay = height;
+	}
+
+	float rest_width = width - ax;
+	float rest_height = height - ay;
+	
+	glViewport(rest_width / 2.0f, rest_height / 2.0f, ax, ay);
+}
+
+void core_fix_aspect_ratio(struct core *core)
+{
+	/* Set up ratio. */
+	int x, y, w, h;
+	glfwGetFramebufferSize(core->graphics.window, &w, &h);
+	core_glfw_resize_callback(core->graphics.window, w, h);
+}
+
 static void core_load(struct core* core)
 {
 	/* Create a square white texture for texturing empty sprites with. */
@@ -70,6 +103,8 @@ static void core_assets_init(struct core* core)
 
 static void core_think(struct core* core, struct graphics *g, float delta_time)
 {
+	core_fix_aspect_ratio(core);
+
 	/* Common think functions. */
 	vfs_filewatch();
 	console_think(&core->console, delta_time);
@@ -203,31 +238,6 @@ void core_get_viewport(struct core* core, float* x, float* y, float* w, float* h
 	*h = buffer[3];
 }
 
-void core_glfw_resize_callback(GLFWwindow *window, int width, int height)
-{
-	float ax = width;
-	float ay = height;
-	float ratio = core_global->view_height / core_global->view_width;
-
-	float max_width = height / ratio;
-
-	if (width < max_width)
-	{
-		ax = width;
-		ay = ax*ratio;
-	}
-	else
-	{
-		ax = ay/ratio;
-		ay = height;
-	}
-
-	float rest_width = width - ax;
-	float rest_height = height - ay;
-
-	glViewport(rest_width / 2.0f, rest_height / 2.0f, ax, ay);
-}
-
 /**
  * @param load_callback		Responsible for registering all the VFS callbacks
  *							required for the game. After load_callback has been
@@ -272,11 +282,7 @@ void core_setup(struct core* core, const char *title, int view_width, int view_h
 	}
 
 	glfwSetFramebufferSizeCallback(core->graphics.window, &core_glfw_resize_callback);
-
-	/* Set up ratio. */
-	int w, h;
-	glfwGetWindowSize(core->graphics.window, &w, &h);
-	core_glfw_resize_callback(core->graphics.window, w, h);
+	core_fix_aspect_ratio(core);
 
 	/* Get input events. */
 	ret = input_init(core, &core->input, core->graphics.window, &core_key_callback,
