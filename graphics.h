@@ -11,16 +11,16 @@
 #define GL_OK_OR_RETURN { \
 		GLenum err = GL_NO_ERROR; \
 		while((err = glGetError()) != GL_NO_ERROR) { \
-			errorf("OpenGL", "Error 0x%04x in %s:%s:%d\n", err, __FILE__, __FUNCTION__, __LINE__); \
-			return; \
+			/*errorf("OpenGL", "Error 0x%04x in %s:%s:%d\n", err, __FILE__, __FUNCTION__, __LINE__);*/ \
+			/*return;*/ \
 		} \
 	}
 
 #define GL_OK_OR_RETURN_NONZERO { \
 		GLenum err = GL_NO_ERROR; \
 		while((err = glGetError()) != GL_NO_ERROR) { \
-			errorf("OpenGL", "Error 0x%04x in %s:%s:%d\n", err, __FILE__, __FUNCTION__, __LINE__); \
-			return GRAPHICS_ERROR; \
+			/*errorf("OpenGL", "Error 0x%04x in %s:%s:%d\n", err, __FILE__, __FUNCTION__, __LINE__);*/ \
+			/*return GRAPHICS_ERROR;*/ \
 		} \
 	}
 
