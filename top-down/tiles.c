@@ -66,7 +66,8 @@ void tiles_init(struct tiles *tiles, struct anim **data, int tile_size,
 			}
 
 			/* FIXME: need a size parameter! Force 32x32 tiles... */
-			set2f(draw_tile->scale, 1, 1);
+			/* FIXME: hack, to avoid tile tearing... */
+			set2f(draw_tile->scale, 1.075, 1.075);
 
 			set3f(draw_tile->position,
 					(x-1) * tile_size + tile_size/2.0f,
