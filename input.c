@@ -128,7 +128,6 @@ void input_window_to_view(float win_x, float win_y, float win_w, float win_h, fl
 
 void input_window_get_cursor(GLFWwindow *window, float *x, float *y)
 {
-	
 	double tmp_x = 0, tmp_y = 0;
 	glfwGetCursorPos(window, &tmp_x, &tmp_y);
 	*x = (float) tmp_x;
