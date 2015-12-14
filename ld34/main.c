@@ -77,9 +77,9 @@
 #define GAME_STATE_WIN			3
 
 #define SCREEN_SHAKE_TIME			500.0f
-#define SCREEN_SHAKE_POWER_ATTACK	5.0f
-#define SCREEN_SHAKE_BIG_DMG		10.0f
-#define SCREEN_SHAKE_SMALL_DMG		5.0f
+#define SCREEN_SHAKE_POWER_ATTACK	0.25f
+#define SCREEN_SHAKE_BIG_DMG		1.0f
+#define SCREEN_SHAKE_SMALL_DMG		0.25f
 
 #define DIR_DOWN	0
 #define DIR_UP		1
@@ -723,8 +723,8 @@ void view_offset_think(float dt)
 	game->player.arrow.rotation = player_angle;
 
 	if(game_elapsed(game->screen_shake_start) <= SCREEN_SHAKE_TIME) {
-		game->view_offset[0] += randr(-game->screen_shake_power, +game->screen_shake_power);
-		game->view_offset[1] += randr(-game->screen_shake_power, +game->screen_shake_power);
+		game->view_offset[0] += randr(-game->screen_shake_power, +game->screen_shake_power) * dt;
+		game->view_offset[1] += randr(-game->screen_shake_power, +game->screen_shake_power) * dt;
 		game->screen_shake_power = game->screen_shake_power * (1.0f - game_elapsed(game->screen_shake_start) / SCREEN_SHAKE_TIME);
 	}
 }
