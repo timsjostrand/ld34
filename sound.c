@@ -132,7 +132,7 @@ int sound_init(struct sound *s, vec3 listener_pos, float max_distance)
 		sound_emitter_init(&(s->emitters_mem[i]));
 		s->emitters_mem[i].src = sources[i];
 		alSourcef(sources[i], AL_MAX_DISTANCE, max_distance);
-		alSourcef(sources[i], AL_ROLLOFF_FACTOR, 1);
+		alSourcef(sources[i], AL_ROLLOFF_FACTOR, 0);
 	}
 
 	return SOUND_OK;
