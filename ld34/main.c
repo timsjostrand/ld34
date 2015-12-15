@@ -730,7 +730,6 @@ void view_offset_think(float dt)
 		if(game_elapsed(game->screen_shake_updated) >= 16.0f) {
 			float shake_x = randr(-game->screen_shake_power, +game->screen_shake_power);
 			float shake_y = randr(-game->screen_shake_power, +game->screen_shake_power);
-			printf("shake_x=%f shake_y=%f\n", shake_x, shake_y);
 			game->view_offset[0] += shake_x;
 			game->view_offset[1] += shake_y;
 			game->screen_shake_power = game->screen_shake_power_max * (1.0f - game_elapsed(game->screen_shake_start) / SCREEN_SHAKE_TIME);
