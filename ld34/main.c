@@ -77,9 +77,9 @@
 #define GAME_STATE_WIN			3
 
 #define SCREEN_SHAKE_TIME			500.0f
-#define SCREEN_SHAKE_POWER_ATTACK	0.25f
-#define SCREEN_SHAKE_BIG_DMG		1.0f
-#define SCREEN_SHAKE_SMALL_DMG		0.25f
+#define SCREEN_SHAKE_BIG_DMG		8.0f
+#define SCREEN_SHAKE_SMALL_DMG		2.0f
+#define SCREEN_SHAKE_POWER_ATTACK	SCREEN_SHAKE_SMALL_DMG
 
 #define DIR_DOWN	0
 #define DIR_UP		1
@@ -285,6 +285,8 @@ struct game {
 	float					lerp_factor;
 	float					debug;
 	float					screen_shake_start;
+	float					screen_shake_updated;
+	float					screen_shake_power_max;
 	float					screen_shake_power;
 	vec2					sound_pos;
 
@@ -448,6 +450,8 @@ void camera_set(vec2 src, int immediately)
 void screen_shake(float power)
 {
 	game->screen_shake_start = game->time;
+	game->screen_shake_updated = game->time;
+	game->screen_shake_power_max = power;
 	game->screen_shake_power = power;
 }
 
@@ -723,9 +727,15 @@ void view_offset_think(float dt)
 	game->player.arrow.rotation = player_angle;
 
 	if(game_elapsed(game->screen_shake_start) <= SCREEN_SHAKE_TIME) {
-		game->view_offset[0] += randr(-game->screen_shake_power, +game->screen_shake_power) * dt;
-		game->view_offset[1] += randr(-game->screen_shake_power, +game->screen_shake_power) * dt;
-		game->screen_shake_power = game->screen_shake_power * (1.0f - game_elapsed(game->screen_shake_start) / SCREEN_SHAKE_TIME);
+		if(game_elapsed(game->screen_shake_updated) >= 16.0f) {
+			float shake_x = randr(-game->screen_shake_power, +game->screen_shake_power);
+			float shake_y = randr(-game->screen_shake_power, +game->screen_shake_power);
+			printf("shake_x=%f shake_y=%f\n", shake_x, shake_y);
+			game->view_offset[0] += shake_x;
+			game->view_offset[1] += shake_y;
+			game->screen_shake_power = game->screen_shake_power_max * (1.0f - game_elapsed(game->screen_shake_start) / SCREEN_SHAKE_TIME);
+			game->screen_shake_updated = game->time;
+		}
 	}
 }
 
